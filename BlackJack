@@ -1,0 +1,28 @@
+package blackjack;
+
+import javax.swing.JOptionPane;
+
+public class BlackJack {
+
+    public static void main(String[] args) {
+        JOptionPane.showMessageDialog(null, sumar(cartaAleatoria(), cartaAleatoria()));
+    }
+
+    public static int sumar(int n, int m) {
+        if (n + m >= 21) {
+            JOptionPane.showMessageDialog(null, m + " y " + n + "  =  " + (n + m));
+            return n + m;
+        } else {
+            JOptionPane.showMessageDialog(null, m + " y " + n + "  =  " + (n + m));
+            if (JOptionPane.showConfirmDialog(null, "Desea pedir nueva carta") == 1) {
+                return m + n;
+            }
+            return sumar(cartaAleatoria(), m + n);
+        }
+    }
+
+    public static int cartaAleatoria() {
+        return (int) (Math.random() * 11 + 1);
+    }
+
+}

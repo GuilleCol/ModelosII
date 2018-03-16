@@ -35,7 +35,7 @@ contieneListaRec [] (y:ys) = True
 contieneListaRec (x:xs) [] = True
 contieneListaRec (x:xs) (y:ys) = lista y (x:xs) && contieneListaRec (x:xs) ys
 
---5--
+--5 Recursivo --
 maximo::[Int]->Int
 maximo [x] = x
 maximo (x:n:xs)

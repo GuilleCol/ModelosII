@@ -28,6 +28,13 @@ def buscarhijos(hijos,posicion):
         return False
     return buscar(hijos[0],posicion) or buscarhijos(hijos[1:],posicion)
 
+def buscarValor(arbol,valor):
+    if arbol==None:
+        return False
+    if arbol.valor==valor:
+        return True
+    return buscarhijosValor(arbol.hijos,valor) 
+
 def buscarX(Lab):
    for x in Lab:
        for y in range(len(x)):
@@ -82,3 +89,16 @@ def Der(x,y,nodo,Lab):
             return None
     else:
         return None
+
+def buscarhijosValor(hijos,valor):
+    if hijos==[]:
+        return False
+    return buscarValor(hijos[0],valor) or buscarhijosValor(hijos[1:],valor)    
+
+raiz=Punto(0,0,[])
+buscarX(cargarArchivo())
+
+if(buscarValor(raiz,"y")==True):
+    print("Si tiene solución")
+else:
+    print("No tiene solución")

@@ -1,4 +1,3 @@
-
 class Punto():
     def __init__(self,valor,posicion,hijos=[]):
         self.valor=valor

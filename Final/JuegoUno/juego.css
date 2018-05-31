@@ -1,0 +1,25 @@
+p{
+	color: #ffffff;
+	font-size: 2m;
+	font-family: consolas;
+	align-content: center;
+	text-align: center;
+}
+
+h1{
+	font-family: consolas;
+	text-align: center;
+	color: #FF8000;
+	align-content: center;
+}
+
+h3{
+	font-family: consolas;
+	text-align: center;
+	color: #FF8000;
+	align-content: center;
+}
+
+table{
+	padding-left: 50px;
+}

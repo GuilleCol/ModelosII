@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel=stylesheet href="juego.css" type="text/css">
+    <meta charset="utf-8" />
+    <title>Juego de Profesores y Salon</title>
+    <style>* { padding: 0; margin: 0; } canvas { background-image: url("fondo.gif"); display: block; margin: 0 auto; }</style>
+</head>
+<body style="background-image: url('fondo.gif');">
+<table width="100%" border="0">
+  <tbody>
+    <tr>
+      <td width="274px">
+		<h1>INTRUCCIONES DE JUEGO</h1>
+		<br><br>
+	    <p>Para juegar utilizaremos las flechas del computador para desplazarnos a los lados</p><br>	    
+	    <p>Existen dos tipos de bloques los profesores y los alumnos</p><br>
+	    <p>Los Profesores (Rojos) te quitan vida y solo los puedes matar consiguiendo el punto del estudiante de al lado</p><br>
+	    <p>Los Estudiantes de dan puntos y eliminan al profesor que los vigila</p><br>
+	    <p>El juego acaba cuando elimines a los profesores<p><br>
+
+	    <h3>Luis Gutierrez V. 20152020922</h3>
+	    <h3>Kevin Puentes Y. 20151020040</h3>
+	  </td>
+      <td width="730px">
+<canvas id="myCanvas" width="730" height="600"></canvas>
+
+<script>
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    var radioBola = 10;
+    var x = canvas.width/2;
+    var y = canvas.height-30;
+    var dx = 2;
+    var dy = -2;
+    var barraAlto = 10;
+    var barraAncho = 75;
+    var paddleX = (canvas.width-barraAncho)/2;
+    var rightPressed = false;
+    var leftPressed = false;
+    var tamFilaAzul = 4;
+    var tamColumnaAzul = 8;
+    var tamFilaRoja = 4;
+    var tamColumnaRoja = 8;
+    var anchoBloque = 75;
+    var altoBloque = 20;
+    var paddingBloque = 10;
+    var brickOffsetTop = 30;
+    var brickOffsetLeft = 30;
+    var puntaje = 0;
+    var vidas = 10;
+
+    var bloqueAzul = [];
+    var bloqueRojo = [];
+
+    for(var c=0; c<tamColumnaAzul; c++) {
+        bloqueAzul[c] = [];
+        for(var r=0; r<tamFilaAzul; r++) {
+            bloqueAzul[c][r] = { x: 0, y: 0, status: 1 };
+        }
+    }
+
+    for(var c=0; c<tamColumnaRoja; c++) {
+        bloqueRojo[c] = [];
+        for(var r=0; r<tamFilaRoja; r++) {
+            bloqueRojo[c][r] = { x: 0, y: 0, status: 2 };
+        }
+    }
+
+
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+
+    function keyDownHandler(e) {
+        if(e.keyCode == 39) {
+            rightPressed = true;
+        }
+        else if(e.keyCode == 37) {
+            leftPressed = true;
+        }
+    }
+    function keyUpHandler(e) {
+        if(e.keyCode == 39) {
+            rightPressed = false;
+        }
+        else if(e.keyCode == 37) {
+            leftPressed = false;
+        }
+    }
+
+    function detectorDeLaColicion() {
+        for(var c=0; c<tamColumnaAzul; c++) {
+            for(var r=0; r<tamFilaAzul; r++) {
+                var b = bloqueAzul[c][r];
+                if(b.status == 1) {
+                    if(x > b.x && x < b.x+anchoBloque && y > b.y && y < b.y+altoBloque) {
+                        dy = -dy;
+                        b.status = 0;
+                        puntaje++;
+                        if(puntaje == tamFilaAzul*tamColumnaAzul) {
+                            alert("YOU WIN, CONGRATS!");
+                            document.location.reload();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+     function detectorDeLaColicion2() {
+        for(var c=0; c<tamColumnaRoja; c++) {
+            for(var r=0; r<tamFilaRoja; r++) {
+                var b = bloqueRojo[c][r];
+                if(b.status == 2) {
+                    if(x > b.x && x < b.x+anchoBloque && y > b.y && y < b.y+altoBloque) {
+                        dy = -dy;
+                        b.status = 0;
+                        fin();
+                    }
+                }
+            }
+        }
+    }
+
+    function mostrarBola() {
+        ctx.beginPath();
+        ctx.arc(x, y, radioBola, 0, Math.PI*2);
+        ctx.fillStyle = "#FF8000";
+        ctx.fill();
+        ctx.closePath();
+    }
+    function mostrarBarra() {
+        ctx.beginPath();
+        ctx.rect(paddleX, canvas.height-barraAlto, barraAncho, barraAlto);
+        ctx.fillStyle = "#40FF00";
+        ctx.fill();
+        ctx.closePath();
+    }
+    function mostrarBloqueAzul() {
+        for(var c=0; c<tamColumnaAzul; c++) {
+            for(var r=0; r<tamFilaAzul; r++) {
+                if(bloqueAzul[c][r].status == 1) {
+                    var bloqueX = ((2)*r*(anchoBloque+paddingBloque))+brickOffsetLeft;
+                    var bloqueY = (c*(altoBloque+paddingBloque))+brickOffsetTop;
+                    bloqueAzul[c][r].x = bloqueX;
+                    bloqueAzul[c][r].y = bloqueY;
+                    ctx.beginPath();
+                    ctx.rect(bloqueX, bloqueY, anchoBloque, altoBloque);
+                    ctx.fillStyle = "#0095DD";
+                    ctx.fill();
+                    ctx.closePath();
+                }
+            }
+        }
+    }
+
+    function mostrarBloqueRojo() {
+        for(var c=0; c<tamColumnaRoja; c++) {
+            for(var r=0; r<tamFilaRoja; r++) {
+                if(bloqueAzul[c][r].status == 1) {
+                    var bloqueX2 = (85+(2)*r*(anchoBloque+paddingBloque))+brickOffsetLeft;
+                    var bloqueY2 = (c*(altoBloque+paddingBloque))+brickOffsetTop;
+                    bloqueRojo[c][r].x = bloqueX2;
+                    bloqueRojo[c][r].y = bloqueY2;
+                    ctx.beginPath();
+                    ctx.rect(bloqueX2, bloqueY2, anchoBloque, altoBloque);
+                    ctx.fillStyle = "#610B0B";
+                    ctx.fill();
+                    ctx.closePath();
+                }
+            }
+        }
+    }
+
+   	function fin(){
+   		vidas--;
+                if(!vidas) {
+                    alert("GAME OVER");
+                    document.location.reload();
+   	}
+   }
+
+    function mostrarPuntaje() {
+        ctx.font = "20px Consolas";
+        ctx.fillStyle = "#FF8000";
+        ctx.fillText("Puntaje: "+puntaje, 30, 20);
+    }
+    function mostrarVidas() {
+        ctx.font = "20px Consolas";
+        ctx.fillStyle = "#FF8000";
+        ctx.fillText("Numero de Vidas: "+vidas, canvas.width-240, 20);
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        mostrarBloqueAzul();
+        mostrarBloqueRojo();
+        mostrarBola();
+        mostrarBarra();
+        mostrarPuntaje();
+        mostrarVidas();
+        detectorDeLaColicion();
+        detectorDeLaColicion2();
+
+        if(x + dx > canvas.width-radioBola || x + dx < radioBola) {
+            dx = -dx;
+        }
+        if(y + dy < radioBola) {
+            dy = -dy;
+        }
+        else if(y + dy > canvas.height-radioBola) {
+            if(x > paddleX && x < paddleX + barraAncho) {
+                dy = -dy;
+            }
+            else {
+                vidas--;
+                if(!vidas) {
+                    alert("GAME OVER");
+                    document.location.reload();
+                }
+                else {
+                    x = canvas.width/2;
+                    y = canvas.height-30;
+                    dx = 3;
+                    dy = -3;
+                    paddleX = (canvas.width-barraAncho)/2;
+                }
+            }
+        }
+
+        if(rightPressed && paddleX < canvas.width-barraAncho) {
+            paddleX += 7;
+        }
+        else if(leftPressed && paddleX > 0) {
+            paddleX -= 7;
+        }
+
+        x += dx;
+        y += dy;
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+</script>
+</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
